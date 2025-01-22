@@ -1,6 +1,7 @@
 const generateRandomNumber = require("../services/RandomNoGen");
 const userModel = require("../models/userModel");
 
+
 const redButton = [
   1, 3, 5, 7, 9, 12, 14, 16, 18, 21, 23, 25, 27, 30, 32, 34, 36, 39, 41, 43, 45,
   48, 50, 52, 54, 57, 59,
@@ -11,14 +12,16 @@ const blackButton = [
 ];
 const green = [0, 0o0];
 
-const insideBets = async (req, res) => {
+
+const bets = async (req, res) => {
   try {
     const user = await userModel.findById(req.user._id);
-
+    
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
-
+    
+    // array of bets contains the amount, betType and array of buttons from the frontend
     const { bets } = req.body; // Array of bets
 
     // Validate that bets is an array and not empty
@@ -42,6 +45,14 @@ const insideBets = async (req, res) => {
           return buttonCount === 4;
         case "lineBet":
           return buttonCount === 6;
+        case "redBet":
+        case "blackBet":
+        case "greenBet":
+        case "evenBet":
+        case "oddBet":
+        case "lowBet":
+        case "highBet":
+          return true; // No button validation needed for outside bets
         default:
           return false;
       }
@@ -51,7 +62,7 @@ const insideBets = async (req, res) => {
     for (const bet of bets) {
       if (!isValidBet(bet)) {
         return res.status(400).json({
-          error: `Invalid button count for bet type: ${bet.betType}`,
+          error: `Invalid button count or bet type: ${bet.betType}`,
         });
       }
     }
@@ -63,7 +74,8 @@ const insideBets = async (req, res) => {
     }
 
     // Generate the winning number
-    const winningNumber = 10;
+    const winningNumber = generateRandomNumber();
+    // const winningNumber = 10;
     let totalPayout = 0;
 
     // Process each bet
@@ -107,6 +119,56 @@ const insideBets = async (req, res) => {
             payout = amount * 9;
             win = true;
           }
+          break;
+
+        case "redBet":
+          if (redButton.includes(winningNumber)) {
+            payout = amount * 1;
+            win = true;
+          }
+          break;
+
+        case "blackBet":
+          if (blackButton.includes(winningNumber)) {
+            payout = amount * 1;
+            win = true;
+          }
+          break;
+
+        case "greenBet":
+          if (green.includes(winningNumber)) {
+            payout = amount * 57;
+            win = true;
+          }
+          break;
+
+        case "evenBet":
+          if (winningNumber % 2 === 0 && winningNumber !== 0) {
+            payout = amount * 1;
+            win = true;
+          }
+          break;
+
+        case "oddBet":
+          if (winningNumber % 2 !== 0) {
+            payout = amount * 1;
+            win = true;
+          }
+          break;
+
+        case "lowBet":
+          if (winningNumber >= 1 && winningNumber <= 30) {
+            payout = amount * 1;
+            win = true;
+          }
+          break;
+
+        case "highBet":
+          if (winningNumber >= 31 && winningNumber <= 60) {
+            payout = amount * 1;
+            win = true;
+          }
+          break;
 
         default:
           return { error: `Invalid bet type: ${betType}` };
@@ -118,6 +180,7 @@ const insideBets = async (req, res) => {
       }
 
       return {
+        betType,
         button,
         amount,
         win,
@@ -147,6 +210,7 @@ const insideBets = async (req, res) => {
 
     // Prepare the response
     const result = {
+      winningNumber,
       bets: betResults,
       totalPayout,
       balance: user.accountBalance,
@@ -163,4 +227,4 @@ const insideBets = async (req, res) => {
   }
 };
 
-module.exports = { insideBets };
+module.exports = { bets };

@@ -3,10 +3,11 @@ const bcrypt = require("bcrypt");
 const asynchandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 
+//token genterator
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" });
 };
-
+//register
 const register = asynchandler(async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -44,7 +45,7 @@ const register = asynchandler(async (req, res) => {
 
   res.status(200).json({ user, token });
 });
-
+//login
 const login = asynchandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -86,7 +87,6 @@ const login = asynchandler(async (req, res) => {
     throw new Error("Invalid Email or Password");
   }
 });
-
 //logout
 const logout = asynchandler(async (req, res) => {
   res.cookie("token", "", {
@@ -98,10 +98,10 @@ const logout = asynchandler(async (req, res) => {
   });
   return res.status(201).json({ message: "Logout Successfully" });
 });
-
-//getuser
+//getuser details
 const getUser = asynchandler(async (req, res) => {
   const user = await userModel.findById(req.user._id);
   res.json({ user });
 });
+
 module.exports = { register, login, logout, getUser };

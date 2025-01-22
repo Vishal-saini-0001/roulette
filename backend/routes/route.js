@@ -11,6 +11,6 @@ Router.get("/logout", userController.logout);
 Router.get("/getUser", protect, userController.getUser);
 
 //bets route
-Router.post("/insidebet", protect, betController.insideBets);
+Router.post("/bets", protect, betController.bets);
 
 module.exports = Router;
