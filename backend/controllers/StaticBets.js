@@ -1,5 +1,4 @@
-const generateRandomNumber = require("../services/RandomNoGen");
-const userModel = require("../models/userModel");
+const generateRandomNumber = () => Math.floor(Math.random() * 61); // Generate a random number between 0 and 60
 
 const redButton = [
   1, 3, 5, 7, 9, 12, 14, 16, 18, 21, 23, 25, 27, 30, 32, 34, 36, 39, 41, 43, 45,
@@ -11,23 +10,22 @@ const blackButton = [
 ];
 const green = [0, 0o0];
 
-const bets = async (req, res) => {
+// Mock user data (for demonstration purposes)
+let user = {
+  accountBalance: 1000,
+  totalBets: 0,
+  lastBets: [],
+};
+
+const Staticbets = (req, res) => {
   try {
-    const user = await userModel.findById(req.user._id);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found." });
-    }
-
-    // array of bets contains the amount, betType and array of buttons from the frontend
+    // Mock request body for bets
     const { bets } = req.body; // Array of bets
 
-    // Validate that bets is an array and not empty
     if (!Array.isArray(bets) || bets.length === 0) {
       return res.status(400).json({ error: "A valid bets array is required." });
     }
 
-    // Validate the number of buttons based on the bet type
     const isValidBet = (bet) => {
       const { button, betType } = bet;
       const buttonCount = Array.isArray(button) ? button.length : 0;
@@ -50,13 +48,12 @@ const bets = async (req, res) => {
         case "oddBet":
         case "lowBet":
         case "highBet":
-          return true; // No button validation needed for outside bets
+          return true;
         default:
           return false;
       }
     };
 
-    // Check if all bets are valid
     for (const bet of bets) {
       if (!isValidBet(bet)) {
         return res.status(400).json({
@@ -65,18 +62,15 @@ const bets = async (req, res) => {
       }
     }
 
-    // Check if the user has sufficient balance for all bets
     const totalBetAmount = bets.reduce((sum, bet) => sum + bet.amount, 0);
     if (totalBetAmount > user.accountBalance) {
       return res.status(400).json({ error: "Insufficient balance." });
     }
 
-    // Generate the winning number
-    const winningNumber = generateRandomNumber();
-    // const winningNumber = 10;
+    // const winningNumber = generateRandomNumber();
+    const winningNumber = 10
     let totalPayout = 0;
 
-    // Process each bet
     const betResults = bets.map((bet) => {
       const { button, amount, betType } = bet;
 
@@ -172,7 +166,6 @@ const bets = async (req, res) => {
           return { error: `Invalid bet type: ${betType}` };
       }
 
-      // Update the total payout for the current bet
       if (win) {
         totalPayout += payout;
       }
@@ -186,27 +179,18 @@ const bets = async (req, res) => {
       };
     });
 
-    // Calculate the total loss amount (only for losing bets)
     const totalLossAmount = bets.reduce((sum, bet, index) => {
       return betResults[index].win ? sum : sum + bet.amount;
     }, 0);
 
-    // Deduct only the total loss amount and add total payout to the user's balance
     user.accountBalance = user.accountBalance - totalLossAmount + totalPayout;
-
-    // Update the user's bet count
     user.totalBets += bets.length;
 
-    // Add the new bets to the user's lastBets history
     user.lastBets.unshift(...betResults);
     if (user.lastBets.length > 10) {
       user.lastBets = user.lastBets.slice(0, 10);
     }
 
-    // Save the updated user data to the database
-    await user.save();
-
-    // Prepare the response
     const result = {
       winningNumber,
       bets: betResults,
@@ -225,4 +209,4 @@ const bets = async (req, res) => {
   }
 };
 
-module.exports = { bets };
+module.exports = { Staticbets };
