@@ -6,8 +6,9 @@ const UserDetail = () => {
   const navigate = useNavigate();
 
   const handleApi = async () => {
+    const url = import.meta.env.VITE_API_URL;
     try {
-      const response = await fetch("http://localhost:3000/api/getUser", {
+      const response = await fetch(`${url}/api/getUser`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -28,9 +29,10 @@ const UserDetail = () => {
   },[data]);
 
   const handleLogout = async () => {
+    const url = import.meta.env.VITE_API_URL;
     try {
       // Call the backend to clear the HTTP-only cookie
-      const response = await fetch("http://localhost:3000/api/logout", {
+      const response = await fetch(`${url}/api/logout`, {
         method: "GET",
         credentials: "include", // Ensures cookies are included in the request
       });
@@ -38,7 +40,9 @@ const UserDetail = () => {
       if (response.ok) {
         localStorage.removeItem("token");
 
-        navigate("/register");
+        setTimeout(() => {
+          navigate("/"); // Redirect after success
+        }, 1000);
       } else {
         console.error("Failed to log out from backend");
       }
@@ -58,15 +62,19 @@ const UserDetail = () => {
           />
         </div>
         <div>
-          Welcome, <span className="text-red-500">{data.username}</span>
+          Welcome,{" "}
+          <span className="text-red-500 tracking-wider">{data.username}</span>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex items-center gap-5">
         {" "}
-        <div>Account Balance, ${data.accountBalance}</div>{" "}
+        <div>
+          Account Balance,{" "}
+          <span className="font-bold">${data.accountBalance}</span>{" "}
+        </div>{" "}
         <div
           onClick={handleLogout}
-          className="p-1 cursor-pointer bg-red-400 rounded-lg text-center"
+          className="px-6 py-1 text-white cursor-pointer bg-red-400 rounded-md text-center shadow-xl shadow-red-500/50 "
         >
           LogOut
         </div>{" "}

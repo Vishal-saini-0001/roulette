@@ -11,6 +11,22 @@ const blackButton = [
 ];
 const green = [0, 0o0];
 
+const firstCol = [
+  1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 52, 55, 58,
+];
+const secCol = [
+  2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59,
+];
+const thirdCol = [
+  3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60,
+];
+
+const first12 = Array.from({ length: 12 }, (_, i) => i + 1);
+const second12 = Array.from({ length: 12 }, (_, i) => i + 13);
+const third12 = Array.from({ length: 12 }, (_, i) => i + 25);
+const fourth12 = Array.from({ length: 12 }, (_, i) => i + 37);
+const fifth12 = Array.from({ length: 12 }, (_, i) => i + 49);
+
 const bets = async (req, res) => {
   try {
     const user = await userModel.findById(req.user._id);
@@ -19,15 +35,12 @@ const bets = async (req, res) => {
       return res.status(404).json({ error: "User not found." });
     }
 
-    // array of bets contains the amount, betType and array of buttons from the frontend
     const { bets } = req.body; // Array of bets
 
-    // Validate that bets is an array and not empty
     if (!Array.isArray(bets) || bets.length === 0) {
       return res.status(400).json({ error: "A valid bets array is required." });
     }
 
-    // Validate the number of buttons based on the bet type
     const isValidBet = (bet) => {
       const { button, betType } = bet;
       const buttonCount = Array.isArray(button) ? button.length : 0;
@@ -50,13 +63,20 @@ const bets = async (req, res) => {
         case "oddBet":
         case "lowBet":
         case "highBet":
-          return true; // No button validation needed for outside bets
+        case "firstCol":
+        case "secCol":
+        case "thirdCol":
+        case "first12":
+        case "second12":
+        case "third12":
+        case "fourth12":
+        case "fifth12":
+          return true;
         default:
           return false;
       }
     };
 
-    // Check if all bets are valid
     for (const bet of bets) {
       if (!isValidBet(bet)) {
         return res.status(400).json({
@@ -65,18 +85,14 @@ const bets = async (req, res) => {
       }
     }
 
-    // Check if the user has sufficient balance for all bets
     const totalBetAmount = bets.reduce((sum, bet) => sum + bet.amount, 0);
     if (totalBetAmount > user.accountBalance) {
       return res.status(400).json({ error: "Insufficient balance." });
     }
 
-    // Generate the winning number
     const winningNumber = generateRandomNumber();
-    // const winningNumber = 10;
     let totalPayout = 0;
 
-    // Process each bet
     const betResults = bets.map((bet) => {
       const { button, amount, betType } = bet;
 
@@ -90,89 +106,124 @@ const bets = async (req, res) => {
             win = true;
           }
           break;
-
         case "splitBet":
           if (button.includes(winningNumber)) {
             payout = amount * 28;
             win = true;
           }
           break;
-
         case "streetBet":
           if (button.includes(winningNumber)) {
             payout = amount * 18;
             win = true;
           }
           break;
-
         case "cornerBet":
           if (button.includes(winningNumber)) {
             payout = amount * 14;
             win = true;
           }
           break;
-
         case "lineBet":
           if (button.includes(winningNumber)) {
             payout = amount * 9;
             win = true;
           }
           break;
-
         case "redBet":
           if (redButton.includes(winningNumber)) {
             payout = amount * 1;
             win = true;
           }
           break;
-
         case "blackBet":
           if (blackButton.includes(winningNumber)) {
             payout = amount * 1;
             win = true;
           }
           break;
-
         case "greenBet":
           if (green.includes(winningNumber)) {
             payout = amount * 57;
             win = true;
           }
           break;
-
         case "evenBet":
           if (winningNumber % 2 === 0 && winningNumber !== 0) {
             payout = amount * 1;
             win = true;
           }
           break;
-
         case "oddBet":
           if (winningNumber % 2 !== 0) {
             payout = amount * 1;
             win = true;
           }
           break;
-
         case "lowBet":
           if (winningNumber >= 1 && winningNumber <= 30) {
             payout = amount * 1;
             win = true;
           }
           break;
-
         case "highBet":
           if (winningNumber >= 31 && winningNumber <= 60) {
             payout = amount * 1;
             win = true;
           }
           break;
-
+        case "firstCol":
+          if (firstCol.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
+        case "secCol":
+          if (secCol.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
+        case "thirdCol":
+          if (thirdCol.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
+        case "first12":
+          if (first12.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
+        case "second12":
+          if (second12.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
+        case "third12":
+          if (third12.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
+        case "fourth12":
+          if (fourth12.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
+        case "fifth12":
+          if (fifth12.includes(winningNumber)) {
+            payout = amount * 1.8;
+            win = true;
+          }
+          break;
         default:
           return { error: `Invalid bet type: ${betType}` };
       }
 
-      // Update the total payout for the current bet
       if (win) {
         totalPayout += payout;
       }
@@ -186,27 +237,21 @@ const bets = async (req, res) => {
       };
     });
 
-    // Calculate the total loss amount (only for losing bets)
     const totalLossAmount = bets.reduce((sum, bet, index) => {
       return betResults[index].win ? sum : sum + bet.amount;
     }, 0);
 
-    // Deduct only the total loss amount and add total payout to the user's balance
     user.accountBalance = user.accountBalance - totalLossAmount + totalPayout;
 
-    // Update the user's bet count
     user.totalBets += bets.length;
 
-    // Add the new bets to the user's lastBets history
     user.lastBets.unshift(...betResults);
     if (user.lastBets.length > 10) {
       user.lastBets = user.lastBets.slice(0, 10);
     }
 
-    // Save the updated user data to the database
     await user.save();
 
-    // Prepare the response
     const result = {
       winningNumber,
       bets: betResults,

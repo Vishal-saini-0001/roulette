@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast"; 
 
 const Login = () => {
+  document.title ="Login"
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,6 +27,10 @@ const Login = () => {
       setError("Both fields are required.");
       return;
     }
+
+    // Show loading toast message while the API request is being processed
+    const loginToast = toast.loading("Logging in...");
+
     try {
       const response = await fetch("http://localhost:3000/api/login", {
         method: "POST",
@@ -35,17 +41,22 @@ const Login = () => {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
+
+      // Once the request is done, show the appropriate toast
       if (response.ok) {
-        setSuccess("Login successful!");
+        toast.success("Login successful!", { id: loginToast }); 
         setError("");
+        setSuccess("Login successful!");
         setTimeout(() => {
-          navigate("/rouletteBoard"); // Redirect to a dashboard or home page
+          navigate("/rouletteBoard"); // Redirect to home page
         }, 2000);
       } else {
+        toast.error(data.message || "Invalid credentials.", { id: loginToast }); 
         setError(data.message || "Invalid credentials.");
         setSuccess("");
       }
     } catch (err) {
+      toast.error("An error occurred. Please try again.", { id: loginToast }); 
       setError("An error occurred. Please try again.");
       setSuccess("");
     }
@@ -61,8 +72,7 @@ const Login = () => {
           <h3 className="text-red-500 tracking-widest text-center mb-3">
             Login here
           </h3>
-          {error && <div className="text-red-500 text-center">{error}</div>}
-          {success && <div className="text-green-500 text-center">{success}</div>}
+  
           <input
             className="border-zinc-600 border rounded-full px-12 text-center py-2 outline-none"
             type="email"
@@ -93,6 +103,7 @@ const Login = () => {
           </h3>
         </form>
       </div>
+      <Toaster /> {/* Add this line to render toast notifications */}
     </div>
   );
 };

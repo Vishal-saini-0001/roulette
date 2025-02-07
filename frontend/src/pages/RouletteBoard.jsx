@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UserDetail from "./UserDetail";
 import LastBets from "./LastBets";
+import toast, { Toaster } from "react-hot-toast"; 
 
 const betTypeMapping = {
   Single: "singleBet",
@@ -15,6 +16,14 @@ const betTypeMapping = {
   Low: "lowBet",
   High: "highBet",
   Green: "greenBet",
+  "First Column": "firstCol",
+  "Second Column": "secCol",
+  "Third Column": "thirdCol",
+  "1st 12": "first12",
+  "2nd 12": "second12",
+  "3rd 12": "third12",
+  "4th 12": "fourth12",
+  "5th 12": "fifth12",
 };
 
 const predefinedAmounts = [10, 20, 30, 40, 50];
@@ -29,7 +38,9 @@ const blackButton = [
 ];
 const green = [0, 0o0];
 
+
 const RouletteBoard = () => {
+    document.title ="Roulette Board"
   const [bets, setBets] = useState([]);
   const [selectedBetType, setSelectedBetType] = useState("");
   const [selectedNumbers, setSelectedNumbers] = useState([]);
@@ -61,6 +72,21 @@ const RouletteBoard = () => {
       streetBet: 3,
       cornerBet: 4,
       lineBet: 6,
+      firstCol: 0,
+      secCol: 0,
+      thirdCol: 0,
+      first12: 0,
+      second12: 0,
+      third12: 0,
+      fourth12: 0,
+      fifth12: 0,
+      redBet: 0,
+      blackBet: 0,
+      evenBet: 0,
+      oddBet: 0,
+      lowBet: 0,
+      highBet: 0,
+      greenBet: 0,
     };
 
     if (!selectedBetType) {
@@ -68,8 +94,13 @@ const RouletteBoard = () => {
       return;
     }
 
-    if (requiredCounts[selectedBetType] && selectedNumbers.length !== requiredCounts[selectedBetType]) {
-      setError(`Please select exactly ${requiredCounts[selectedBetType]} number(s) for ${selectedBetType}.`);
+    if (
+      requiredCounts[selectedBetType] &&
+      selectedNumbers.length !== requiredCounts[selectedBetType]
+    ) {
+      setError(
+        `Please select exactly ${requiredCounts[selectedBetType]} number(s) for ${selectedBetType}.`
+      );
       return;
     }
 
@@ -96,9 +127,11 @@ const RouletteBoard = () => {
       setError("Please add at least one bet before placing bets.");
       return;
     }
+const url = import.meta.env.VITE_API_URL;
+
 
     try {
-      const response = await fetch("http://localhost:3000/api/bets", {
+      const response = await fetch(`${url}/api/bets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,9 +157,8 @@ const RouletteBoard = () => {
 
   return (
     <div className="p-6 mx-auto">
-      <UserDetail />
+      <UserDetail  />
       <h1 className="text-2xl font-bold mb-4">Roulette Game</h1>
-      {error && <div className="text-red-600 mb-4">{error}</div>}
 
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Choose Your Bet Type</h2>
@@ -136,7 +168,9 @@ const RouletteBoard = () => {
               key={type}
               onClick={() => handleBetTypeClick(type)}
               className={`p-2 border rounded ${
-                selectedBetType === betTypeMapping[type] ? "bg-blue-500 text-white" : "bg-gray-200"
+                selectedBetType === betTypeMapping[type]
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
               }`}
             >
               {type}
@@ -148,7 +182,7 @@ const RouletteBoard = () => {
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Select Numbers</h2>
         <div className="grid grid-cols-10 gap-2 mt-2">
-          {[...Array(61).keys()].map((num) => (
+          {[...Array(62).keys()].map((num) => (
             <button
               key={num}
               onClick={() => handleNumberClick(num)}
@@ -164,7 +198,7 @@ const RouletteBoard = () => {
                   : "bg-gray-200"
               }`}
             >
-              {num === 60 ? "00" : num}
+              {num === 61 ? "00" : num}
             </button>
           ))}
         </div>
@@ -178,7 +212,9 @@ const RouletteBoard = () => {
               key={amount}
               onClick={() => handleAmountClick(amount)}
               className={`p-2 border rounded ${
-                selectedAmount === amount ? "bg-yellow-500 text-white" : "bg-gray-200"
+                selectedAmount === amount
+                  ? "bg-yellow-500 text-white animate-bounce"
+                  : "bg-gray-200 "
               }`}
             >
               ${amount}
@@ -200,7 +236,8 @@ const RouletteBoard = () => {
           <ul className="list-disc pl-6 mt-2">
             {bets.map((bet, index) => (
               <li key={index}>
-                {bet.betType} - Numbers: {bet.button.join(", ")} - Amount: ${bet.amount}
+                {bet.betType} - Numbers: {bet.button.join(", ")} - Amount: $
+                {bet.amount}
               </li>
             ))}
           </ul>
@@ -211,14 +248,17 @@ const RouletteBoard = () => {
 
       <button
         onClick={handlePlaceBets}
-        className="bg-green-500 text-white p-2 rounded hover:bg-green-600 mt-4"
+        className="bg-green-500 text-white p-2 w-12 h-12 rounded-full hover:bg-green-600 mt-4"
       >
-        Place Bets
+        Spin
       </button>
 
+      <div>{error && <div className="text-red-600 mb-4">{error}</div>}</div>
+      
       {result && (
         <div className="mt-6">
           <h2 className="text-xl font-semibold">Result</h2>
+         
           <p>Winning Number: {result.winningNumber}</p>
           <p>Total Payout: ${result.totalPayout}</p>
           <p>Remaining Balance: ${result.balance}</p>
@@ -226,8 +266,14 @@ const RouletteBoard = () => {
           <ul className="list-disc pl-6">
             {result.lastBets.map((bet, index) => (
               <li key={index}>
-                {bet.betType} - Numbers: {bet.button.join(", ")} - Amount: ${bet.amount} - Win:{" "}
-                {bet.win ? <span className="text-green-500">Yes</span> : <span className="text-red-500">No</span>} - Payout: ${bet.payout}
+                {bet.betType} - Numbers: {bet.button.join(", ")} - Amount: $
+                {bet.amount} - Win: {" "}
+                {bet.win ? (
+                  <span className="text-green-500">Yes</span>
+                ) : (
+                  <span className="text-red-500">No</span>
+                )} {" "}
+                - Payout: ${bet.payout}
               </li>
             ))}
           </ul>

@@ -29,7 +29,7 @@ const LastBets = () => {
     };
 
     fetchLastBets();
-  },[]);
+  }, [lastBetsButtons]);
 
   return (
     <div>
@@ -37,7 +37,7 @@ const LastBets = () => {
       <ul>
         {lastBetsButtons.map((buttons, index) => (
           <li key={index}>
-           Last Bet{" "} {index + 1}:----- {buttons.join(", ")}
+            Last Bet {index + 1}:- {buttons.join(", ")}
           </li>
         ))}
       </ul>

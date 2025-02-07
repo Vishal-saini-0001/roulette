@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RouletteBoard from "./pages/RouletteBoard";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import PageNotFind from "./pages/PageNotFind";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/rouletteBoard" element={<RouletteBoard />} />
+        <Route path="*" element={<PageNotFind />} />
       </Routes>
     </BrowserRouter>
   );
