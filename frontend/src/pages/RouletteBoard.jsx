@@ -127,7 +127,7 @@ const RouletteBoard = () => {
       setError("Please add at least one bet before placing bets.");
       return;
     }
-const url = "https://roulette.studioubique-dev.com/roulette";
+const url = import.meta.env.VITE_API_URL;
 
 
     try {

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast"; 
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
-  document.title ="Login"
+  document.title = "Login";
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,9 +30,10 @@ const Login = () => {
 
     // Show loading toast message while the API request is being processed
     const loginToast = toast.loading("Logging in...");
+    const url = import.meta.env.VITE_API_URL;
 
     try {
-      const response = await fetch("http://localhost:3000/api/login", {
+      const response = await fetch(`${url}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,19 +45,19 @@ const Login = () => {
 
       // Once the request is done, show the appropriate toast
       if (response.ok) {
-        toast.success("Login successful!", { id: loginToast }); 
+        toast.success("Login successful!", { id: loginToast });
         setError("");
         setSuccess("Login successful!");
         setTimeout(() => {
           navigate("/rouletteBoard"); // Redirect to home page
         }, 2000);
       } else {
-        toast.error(data.message || "Invalid credentials.", { id: loginToast }); 
+        toast.error(data.message || "Invalid credentials.", { id: loginToast });
         setError(data.message || "Invalid credentials.");
         setSuccess("");
       }
     } catch (err) {
-      toast.error("An error occurred. Please try again.", { id: loginToast }); 
+      toast.error("An error occurred. Please try again.", { id: loginToast });
       setError("An error occurred. Please try again.");
       setSuccess("");
     }
@@ -72,7 +73,7 @@ const Login = () => {
           <h3 className="text-red-500 tracking-widest text-center mb-3">
             Login here
           </h3>
-  
+
           <input
             className="border-zinc-600 border rounded-full px-12 text-center py-2 outline-none"
             type="email"

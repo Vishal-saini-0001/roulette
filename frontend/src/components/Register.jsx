@@ -3,7 +3,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast"; // Importing toast
 
 const Register = () => {
-   document.title ="Register"
+  document.title = "Register";
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -43,7 +43,7 @@ const Register = () => {
     const registerToast = toast.loading("Registering...");
 
     try {
-      const response = await fetch("http://localhost:3000/api/register", {
+      const response = await fetch(`${url}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,12 +72,16 @@ const Register = () => {
           navigate("/RouletteBoard"); // Redirect after success
         }, 2000);
       } else {
-        toast.error(data.message || "Something went wrong.", { id: registerToast }); 
+        toast.error(data.message || "Something went wrong.", {
+          id: registerToast,
+        });
         setError(data.message || "Something went wrong.");
         setSuccess("");
       }
     } catch (err) {
-      toast.error("An error occurred. Please try again.", { id: registerToast }); 
+      toast.error("An error occurred. Please try again.", {
+        id: registerToast,
+      });
       setError("An error occurred. Please try again.");
       setSuccess("");
     }
@@ -86,7 +90,9 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-700">
       <div className="p-8 border-red-500 border shadow-md rounded-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-red-500 tracking-widest mb-6">Register</h2>
+        <h2 className="text-2xl font-bold text-red-500 tracking-widest mb-6">
+          Register
+        </h2>
         {error && <div className="text-red-500 mb-4">{error}</div>}
         {success && <div className="text-green-500 mb-4">{success}</div>}
         <form onSubmit={handleSubmit}>
