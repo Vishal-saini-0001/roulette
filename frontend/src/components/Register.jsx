@@ -41,7 +41,7 @@ const Register = () => {
 
     // Show loading toast message while the registration request is being processed
     const registerToast = toast.loading("Registering...");
-
+    const url = import.meta.env.VITE_API_URL;
     try {
       const response = await fetch(`${url}/api/register`, {
         method: "POST",

@@ -5,8 +5,9 @@ const LastBets = () => {
 
   useEffect(() => {
     const fetchLastBets = async () => {
+      const url = import.meta.env.VITE_API_URL;
       try {
-        const response = await fetch("http://localhost:3000/api/getUser", {
+        const response = await fetch(`${url}/api/getUser`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
