@@ -6,7 +6,7 @@ const UserDetail = () => {
   const navigate = useNavigate();
 
   const handleApi = async () => {
-    const url = import.meta.env.VITE_API_URL;
+    const url = "https://roulette.studioubique-dev.com/roulette";
     try {
       const response = await fetch(`${url}/api/getUser`, {
         method: "GET",
@@ -29,7 +29,7 @@ const UserDetail = () => {
   },[data]);
 
   const handleLogout = async () => {
-    const url = import.meta.env.VITE_API_URL;
+    const url = "https://roulette.studioubique-dev.com/roulette";
     try {
       // Call the backend to clear the HTTP-only cookie
       const response = await fetch(`${url}/api/logout`, {
