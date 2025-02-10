@@ -99,9 +99,14 @@ const logout = asynchandler(async (req, res) => {
   return res.status(201).json({ message: "Logout Successfully" });
 });
 //getuser details
-const getUser = asynchandler(async (req, res) => {
-  const user = await userModel.findById(req.user._id);
+const getUser = async (req, res) => {
+  try {
+    console.log("get user is hit------")
+    // const user = await userModel.findById(req.user._id);
   res.json({ user });
-});
+  } catch (error) {
+    console.log(error)
+  }
+};
 
 module.exports = { register, login, logout, getUser };
