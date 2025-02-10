@@ -8,8 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
+
 *.local
 
 # Editor directories and files
@@ -60,7 +59,7 @@ bower_components
 .lock-wscript
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
+
 
 # Dependency directories
 node_modules/
@@ -108,7 +107,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+
 
 # Gatsby files
 .cache/
@@ -117,7 +116,7 @@ dist
 # public
 
 # vuepress build output
-.vuepress/dist
+
 
 # Serverless directories
 .serverless/
@@ -137,7 +136,7 @@ dist
 # yarn v2
 .yarn/cache
 .yarn/unplugged
-.yarn/build-state.yml
+
 .yarn/install-state.gz
 .pnp.*
 
