@@ -38,13 +38,15 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Include cookies with the request
+      // Include cookies with the request
         body: JSON.stringify(formData),
       });
       const data = await response.json();
+    
 
       // Once the request is done, show the appropriate toast
       if (response.ok) {
+        localStorage.setItem("token", data.token);
         toast.success("Login successful!", { id: loginToast });
         setError("");
         setSuccess("Login successful!");

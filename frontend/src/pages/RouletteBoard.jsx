@@ -129,14 +129,16 @@ const RouletteBoard = () => {
     }
 const url = import.meta.env.VITE_API_URL;
 
+const token = localStorage.getItem("token"); // Get the token from localStorage
 
     try {
       const response = await fetch(`${url}/api/bets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        credentials: "include",
+       
         body: JSON.stringify({ bets }),
       });
 

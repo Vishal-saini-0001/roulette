@@ -35,13 +35,7 @@ const register = asynchandler(async (req, res) => {
     password: hashPassword,
   });
   const token = generateToken(user._id);
-  res.cookie("token", token, {
-    path: "/",
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    expires: new Date(Date.now() + 1000 * 86400), // 1 day
-  });
+  
 
   res.status(200).json({ user, token });
 });
@@ -65,13 +59,7 @@ const login = asynchandler(async (req, res) => {
   const correctPassword = await bcrypt.compare(password, existUser.password);
 
   const token = generateToken(existUser._id);
-  res.cookie("token", token, {
-    path: "/",
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    expires: new Date(Date.now() + 1000 * 86400), // 1 day
-  });
+  
   if (!correctPassword) {
     res.status(400);
     throw new Error("Invalid Email or Password");
@@ -89,19 +77,16 @@ const login = asynchandler(async (req, res) => {
 });
 //logout
 const logout = asynchandler(async (req, res) => {
-  res.cookie("token", "", {
-    path: "/",
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    expires: new Date(0),
-  });
+ 
   return res.status(201).json({ message: "Logout Successfully" });
 });
 //getuser details
 const getUser = asynchandler(async (req, res) => {
-  const user = await userModel.findById(req.user._id);
-  res.json({ user });
+  const user = await userModel.findById(req.user._id).select("-password");
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  res.status(200).json({ user });
 });
 
 module.exports = { register, login, logout, getUser };

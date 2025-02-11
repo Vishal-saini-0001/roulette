@@ -6,14 +6,25 @@ const LastBets = () => {
   useEffect(() => {
     const fetchLastBets = async () => {
       const url = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("token"); // Get the token from localStorage
+
+      if (!token) {
+        console.error("Authorization token is missing.");
+        return;
+      }
+
       try {
         const response = await fetch(`${url}/api/getUser`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          credentials: "include",
         });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
 
         const data = await response.json();
 
@@ -30,17 +41,21 @@ const LastBets = () => {
     };
 
     fetchLastBets();
-  }, [lastBetsButtons]);
+  }, []); // Removed dependency to avoid unnecessary API calls
 
   return (
     <div>
       <h2>Last 10 Bets</h2>
       <ul>
-        {lastBetsButtons.map((buttons, index) => (
-          <li key={index}>
-            Last Bet {index + 1}:- {buttons.join(", ")}
-          </li>
-        ))}
+        {lastBetsButtons.length > 0 ? (
+          lastBetsButtons.map((buttons, index) => (
+            <li key={index}>
+              Last Bet {index + 1}:- {buttons.join(", ")}
+            </li>
+          ))
+        ) : (
+          <p>No bets found.</p>
+        )}
       </ul>
     </div>
   );

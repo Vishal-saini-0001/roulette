@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast"; // Importing toast
+import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
   document.title = "Register";
@@ -24,7 +24,6 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Basic validation
     if (
       !formData.username ||
       !formData.email ||
@@ -39,7 +38,6 @@ const Register = () => {
       return;
     }
 
-    // Show loading toast message while the registration request is being processed
     const registerToast = toast.loading("Registering...");
     const url = import.meta.env.VITE_API_URL;
     try {
@@ -48,18 +46,18 @@ const Register = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Include cookies with the request
         body: JSON.stringify({
           username: formData.username,
           email: formData.email,
           password: formData.password,
         }),
       });
+
       const data = await response.json();
 
-      // Once the request is done, show the appropriate toast
       if (response.ok) {
-        toast.success("Registration successful!", { id: registerToast }); // Close the loading toast and show success
+        localStorage.setItem("token", data.token); // Store token for authentication
+        toast.success("Registration successful!", { id: registerToast });
         setError("");
         setSuccess("Registration successful!");
         setFormData({
@@ -69,7 +67,7 @@ const Register = () => {
           confirmPassword: "",
         });
         setTimeout(() => {
-          navigate("/RouletteBoard"); // Redirect after success
+          navigate("/rouletteBoard");
         }, 2000);
       } else {
         toast.error(data.message || "Something went wrong.", {
@@ -99,10 +97,9 @@ const Register = () => {
           <div className="mb-4">
             <input
               type="text"
-              id="username"
+              name="username"
               autoComplete="username"
               placeholder="Enter Username"
-              name="username"
               value={formData.username}
               onChange={handleChange}
               className="w-full p-2 border rounded-full text-center focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -111,7 +108,6 @@ const Register = () => {
           <div className="mb-4">
             <input
               type="email"
-              id="email"
               name="email"
               placeholder="Enter Email"
               autoComplete="email"
@@ -123,19 +119,17 @@ const Register = () => {
           <div className="mb-4">
             <input
               type="password"
-              id="password"
               name="password"
               placeholder="Enter Password"
               autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full rounded-full text-center p-2 border  focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full rounded-full text-center p-2 border focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
           <div className="mb-6">
             <input
               type="password"
-              id="confirmPassword"
               name="confirmPassword"
               placeholder="Confirm Password"
               autoComplete="new-password"
@@ -153,12 +147,12 @@ const Register = () => {
           <h3 className="text-red-400 text-left text-sm mt-3">
             Already have an account?{" "}
             <NavLink to="/">
-              <span className="hover:underline">login here</span>
+              <span className="hover:underline">Login here</span>
             </NavLink>
           </h3>
         </form>
       </div>
-      <Toaster /> {/* Add this to render toast notifications */}
+      <Toaster />
     </div>
   );
 };
