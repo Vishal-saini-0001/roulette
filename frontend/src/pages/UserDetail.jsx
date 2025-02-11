@@ -7,7 +7,7 @@ const UserDetail = () => {
   const navigate = useNavigate();
 
   const handleApi = async () => {
-    const url = import.meta.env.VITE_API_URL;
+    const url = import.meta.env.VITE_BASE_URL;
     try {
       const token = localStorage.getItem("token"); // Get token from localStorage
       if (!token) {
@@ -66,7 +66,8 @@ const UserDetail = () => {
       </div>
       <div className="flex items-center gap-5">
         <div>
-          Account Balance, <span className="font-bold">${data?.accountBalance}</span>
+          Account Balance,{" "}
+          <span className="font-bold">${data?.accountBalance}</span>
         </div>
         <div
           onClick={handleLogout}

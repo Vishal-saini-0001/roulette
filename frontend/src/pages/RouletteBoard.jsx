@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UserDetail from "./UserDetail";
 import LastBets from "./LastBets";
-import toast, { Toaster } from "react-hot-toast"; 
+import toast, { Toaster } from "react-hot-toast";
 
 const betTypeMapping = {
   Single: "singleBet",
@@ -38,9 +38,8 @@ const blackButton = [
 ];
 const green = [0, 0o0];
 
-
 const RouletteBoard = () => {
-    document.title ="Roulette Board"
+  document.title = "Roulette Board";
   const [bets, setBets] = useState([]);
   const [selectedBetType, setSelectedBetType] = useState("");
   const [selectedNumbers, setSelectedNumbers] = useState([]);
@@ -127,9 +126,9 @@ const RouletteBoard = () => {
       setError("Please add at least one bet before placing bets.");
       return;
     }
-const url = import.meta.env.VITE_API_URL;
+    const url = import.meta.env.VITE_BASE_URL;
 
-const token = localStorage.getItem("token"); // Get the token from localStorage
+    const token = localStorage.getItem("token"); // Get the token from localStorage
 
     try {
       const response = await fetch(`${url}/api/bets`, {
@@ -138,7 +137,7 @@ const token = localStorage.getItem("token"); // Get the token from localStorage
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-       
+
         body: JSON.stringify({ bets }),
       });
 
@@ -159,7 +158,7 @@ const token = localStorage.getItem("token"); // Get the token from localStorage
 
   return (
     <div className="p-6 mx-auto">
-      <UserDetail  />
+      <UserDetail />
       <h1 className="text-2xl font-bold mb-4">Roulette Game</h1>
 
       <div className="mb-4">
@@ -256,11 +255,11 @@ const token = localStorage.getItem("token"); // Get the token from localStorage
       </button>
 
       <div>{error && <div className="text-red-600 mb-4">{error}</div>}</div>
-      
+
       {result && (
         <div className="mt-6">
           <h2 className="text-xl font-semibold">Result</h2>
-         
+
           <p>Winning Number: {result.winningNumber}</p>
           <p>Total Payout: ${result.totalPayout}</p>
           <p>Remaining Balance: ${result.balance}</p>
@@ -269,12 +268,12 @@ const token = localStorage.getItem("token"); // Get the token from localStorage
             {result.lastBets.map((bet, index) => (
               <li key={index}>
                 {bet.betType} - Numbers: {bet.button.join(", ")} - Amount: $
-                {bet.amount} - Win: {" "}
+                {bet.amount} - Win:{" "}
                 {bet.win ? (
                   <span className="text-green-500">Yes</span>
                 ) : (
                   <span className="text-red-500">No</span>
-                )} {" "}
+                )}{" "}
                 - Payout: ${bet.payout}
               </li>
             ))}

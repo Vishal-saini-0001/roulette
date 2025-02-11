@@ -5,7 +5,7 @@ const LastBets = () => {
 
   useEffect(() => {
     const fetchLastBets = async () => {
-      const url = import.meta.env.VITE_API_URL;
+      const url = import.meta.env.VITE_BASE_URL;
       const token = localStorage.getItem("token"); // Get the token from localStorage
 
       if (!token) {

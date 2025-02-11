@@ -35,7 +35,6 @@ const register = asynchandler(async (req, res) => {
     password: hashPassword,
   });
   const token = generateToken(user._id);
-  
 
   res.status(200).json({ user, token });
 });
@@ -59,7 +58,7 @@ const login = asynchandler(async (req, res) => {
   const correctPassword = await bcrypt.compare(password, existUser.password);
 
   const token = generateToken(existUser._id);
-  
+
   if (!correctPassword) {
     res.status(400);
     throw new Error("Invalid Email or Password");
@@ -77,7 +76,6 @@ const login = asynchandler(async (req, res) => {
 });
 //logout
 const logout = asynchandler(async (req, res) => {
- 
   return res.status(201).json({ message: "Logout Successfully" });
 });
 //getuser details

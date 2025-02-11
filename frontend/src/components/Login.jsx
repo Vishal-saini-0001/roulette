@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-
+const url = import.meta.env.VITE_BASE_URL;
+console.log(url);
 const Login = () => {
   document.title = "Login";
   const [formData, setFormData] = useState({
@@ -30,7 +31,6 @@ const Login = () => {
 
     // Show loading toast message while the API request is being processed
     const loginToast = toast.loading("Logging in...");
-    const url = import.meta.env.VITE_API_URL;
 
     try {
       const response = await fetch(`${url}/api/login`, {
@@ -38,11 +38,10 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-      // Include cookies with the request
+        // Include cookies with the request
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-    
 
       // Once the request is done, show the appropriate toast
       if (response.ok) {
