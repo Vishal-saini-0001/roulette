@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UserDetail from "./UserDetail";
-import LastBets from "./LastBets";
-import toast, { Toaster } from "react-hot-toast";
+import { data } from "react-router-dom";
+// import LastBets from "./LastBets";
 
 const betTypeMapping = {
   Single: "singleBet",
@@ -13,8 +13,8 @@ const betTypeMapping = {
   Black: "blackBet",
   Even: "evenBet",
   Odd: "oddBet",
-  Low: "lowBet",
-  High: "highBet",
+  "Low 1 - 30": "lowBet",
+  "High 31 - 60": "highBet",
   Green: "greenBet",
   "First Column": "firstCol",
   "Second Column": "secCol",
@@ -46,6 +46,7 @@ const RouletteBoard = () => {
   const [selectedAmount, setSelectedAmount] = useState(0);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const [currBalance, SetcurrBalance]= useState("")
 
   const handleNumberClick = (number) => {
     if (selectedNumbers.includes(number)) {
@@ -148,17 +149,20 @@ const RouletteBoard = () => {
       }
 
       const data = await response.json();
+      
       setResult(data);
       setBets([]);
       setError("");
+      SetcurrBalance(data.balance)
     } catch (err) {
       setError("Failed to connect to the server.");
     }
   };
+  
 
   return (
     <div className="p-6 mx-auto">
-      <UserDetail />
+      <UserDetail currBalance={currBalance}/>
       <h1 className="text-2xl font-bold mb-4">Roulette Game</h1>
 
       <div className="mb-4">
@@ -188,12 +192,12 @@ const RouletteBoard = () => {
               key={num}
               onClick={() => handleNumberClick(num)}
               className={`p-2 border rounded ${
-                selectedNumbers.includes(num) ? "ring-2 ring-blue-500" : ""
+                selectedNumbers.includes(num) ? "ring-2 ring-blue-400" : ""
               } ${
                 redButton.includes(num)
-                  ? "bg-red-500 text-white"
+                  ? "bg-red-400   text-white"
                   : blackButton.includes(num)
-                  ? "bg-black text-white"
+                  ? "bg-zinc-700  text-white"
                   : green.includes(num)
                   ? "bg-green-500 text-white"
                   : "bg-gray-200"
@@ -257,31 +261,61 @@ const RouletteBoard = () => {
       <div>{error && <div className="text-red-600 mb-4">{error}</div>}</div>
 
       {result && (
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold">Result</h2>
+  <div className="mt-6 p-4 border rounded-lg shadow-md">
+    <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">Result</h2>
 
-          <p>Winning Number: {result.winningNumber}</p>
-          <p>Total Payout: ${result.totalPayout}</p>
-          <p>Remaining Balance: ${result.balance}</p>
-          <h3 className="text-lg mt-4">Bet Details:</h3>
-          <ul className="list-disc pl-6">
-            {result.lastBets.map((bet, index) => (
-              <li key={index}>
-                {bet.betType} - Numbers: {bet.button.join(", ")} - Amount: $
-                {bet.amount} - Win:{" "}
-                {bet.win ? (
-                  <span className="text-green-500">Yes</span>
-                ) : (
-                  <span className="text-red-500">No</span>
-                )}{" "}
-                - Payout: ${bet.payout}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+    <div className="mt-4 space-y-2 text-gray-700">
+      <p className="text-lg">
+        <span className="font-semibold">Winning Number:</span> {result.winningNumber}
+      </p>
+      <p className="text-lg">
+        <span className="font-semibold">Total Payout:</span> ${result.totalPayout}
+      </p>
+      <p className="text-lg">
+        <span className="font-semibold">Remaining Balance:</span> ${result.balance}
+      </p>
+    </div>
 
-      <LastBets />
+    <h3 className="text-xl font-semibold text-gray-800 mt-6 border-b pb-2 animate-pulse">
+     Last Bet Details
+    </h3>
+
+    <ul className="mt-4 space-y-3">
+      {result.lastBets.map((bet, index) => (
+        <li
+          key={index}
+          className="p-3 bg-white shadow-sm rounded-lg border border-gray-300"
+        >
+          <div className="font-bold text-gray-800 tracking-wide">
+            {bet.betType}
+          </div>
+          <p className="text-gray-700">
+            <span className="font-semibold">Bet on:</span>{" "}
+            {bet.button.join(", ") ? bet.button.join(", ") : bet.betType}
+          </p>
+          <p className="text-gray-700">
+            <span className="font-semibold">Amount:</span> ${bet.amount}
+          </p>
+          <p className="text-gray-700">
+            <span className="font-semibold">Win:</span>{" "}
+            {bet.win ? (
+              <span className="text-green-600 font-bold">Yes</span>
+            ) : (
+              <span className="text-red-500 font-bold">No</span>
+            )}
+          </p>
+          <p className="text-gray-700">
+            <span className="font-semibold">Payout:</span> ${bet.payout}
+          </p>
+          <p className="text-gray-700">
+            <span className="font-semibold">Lose Amount:</span> ${bet.win ? "0" : bet.amount}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 const url = import.meta.env.VITE_BASE_URL;
-console.log(url);
+
 const Login = () => {
   document.title = "Login";
   const [formData, setFormData] = useState({

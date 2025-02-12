@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const UserDetail = () => {
+const UserDetail = (currBalance) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const UserDetail = () => {
 
   useEffect(() => {
     handleApi();
-  }, []); // Run only once when component mounts
+  }, [currBalance]); // Run only once when component mounts
 
   const handleLogout = async () => {
     localStorage.removeItem("token");
@@ -61,7 +61,7 @@ const UserDetail = () => {
         </div>
         <div>
           Welcome,{" "}
-          <span className="text-red-500 tracking-wider">{data?.username}</span>
+          <span className="text-red-400 tracking-wider">{data?.username}</span>
         </div>
       </div>
       <div className="flex items-center gap-5">
