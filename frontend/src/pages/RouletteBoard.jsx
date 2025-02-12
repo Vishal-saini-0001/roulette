@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import UserDetail from "./UserDetail";
-import { data } from "react-router-dom";
+
 // import LastBets from "./LastBets";
 
 const betTypeMapping = {
@@ -36,7 +36,7 @@ const blackButton = [
   2, 4, 6, 8, 10, 11, 13, 15, 17, 19, 20, 22, 24, 26, 28, 29, 31, 33, 35, 37,
   38, 40, 42, 44, 46, 47, 49, 51, 53, 55, 56, 58, 60,
 ];
-const green = [0, 0o0];
+const green = [0, 61];
 
 const RouletteBoard = () => {
   document.title = "Roulette Board";
@@ -111,7 +111,7 @@ const RouletteBoard = () => {
 
     const newBet = {
       betType: selectedBetType,
-      button: selectedNumbers,
+      button: selectedNumbers.map(num => (num === 61 ? "00" : num)),
       amount: selectedAmount,
     };
 
@@ -187,26 +187,27 @@ const RouletteBoard = () => {
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Select Numbers</h2>
         <div className="grid grid-cols-10 gap-2 mt-2">
-          {[...Array(62).keys()].map((num) => (
-            <button
-              key={num}
-              onClick={() => handleNumberClick(num)}
-              className={`p-2 border rounded ${
-                selectedNumbers.includes(num) ? "ring-4 ring-yellow-400" : ""
-              } ${
-                redButton.includes(num)
-                  ? "bg-red-400   text-white"
-                  : blackButton.includes(num)
-                  ? "bg-zinc-700  text-white"
-                  : green.includes(num)
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-200"
-              }`}
-            >
-              {num === 61 ? "00" : num}
-            </button>
-          ))}
-        </div>
+  {[...Array(62).keys()].map((num) => (
+    <button
+      key={num}
+      onClick={() => handleNumberClick(num)}
+      className={`p-2 border rounded ${
+        selectedNumbers.includes(num) ? "ring-4 ring-yellow-400" : ""
+      } ${
+        redButton.includes(num)
+          ? "bg-red-400 text-white"
+          : blackButton.includes(num)
+          ? "bg-zinc-700 text-white"
+          : green.includes(num) // Now correctly includes 00
+          ? "bg-green-500 text-white"
+          : "bg-gray-200"
+      }`}
+    >
+      {num === 61 ? "00" : num}
+    </button>
+  ))}
+</div>
+
       </div>
 
       <div className="mb-4">
@@ -235,9 +236,10 @@ const RouletteBoard = () => {
         Add Bet
       </button>
 
-      <div className="mt-4 flex justify-evenly items-center">
-        <div>
-        <h2 className="text-xl font-semibold">Current Bets</h2>
+      <div className="mt-4 flex justify-evenly items-center flex-wrap">
+        <div className="flex flex-col justify-center items-center gap-2">
+        
+        <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">Current Bets</h2>
         {bets.length > 0 ? (
           <ul className="list-disc pl-6 mt-2">
             {bets.map((bet, index) => (
@@ -250,15 +252,18 @@ const RouletteBoard = () => {
         ) : (
           <p className="mt-2">No bets added yet.</p>
         )}
+        <div className="w-16 h-16 p-1 border-dotted border-2 hover:animate-spin border-green-600 flex items-center justify-center rounded-full">
+
       <button
         onClick={handlePlaceBets}
-        className="bg-green-500 text-white p-2 w-12 h-12 rounded-full hover:bg-green-600 mt-4"
-      >
+        className="bg-green-500 text-white w-full  h-full rounded-full hover:bg-green-600"
+        >
         Spin
       </button>
+        </div>
       </div>
   {result && (
-        <div>  <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">Result</h2>
+        <div className="flex flex-col justify-center items-center gap-2">  <h2 className="text-2xl font-bold  text-gray-800 border-b pb-2">Result</h2>
 
         <div className="mt-1 space-y-2 text-gray-700">
           <p className="text-lg">
