@@ -235,7 +235,8 @@ const RouletteBoard = () => {
         Add Bet
       </button>
 
-      <div className="mt-4">
+      <div className="mt-4 flex justify-evenly items-center">
+        <div>
         <h2 className="text-xl font-semibold">Current Bets</h2>
         {bets.length > 0 ? (
           <ul className="list-disc pl-6 mt-2">
@@ -249,32 +250,36 @@ const RouletteBoard = () => {
         ) : (
           <p className="mt-2">No bets added yet.</p>
         )}
-      </div>
-
       <button
         onClick={handlePlaceBets}
         className="bg-green-500 text-white p-2 w-12 h-12 rounded-full hover:bg-green-600 mt-4"
       >
         Spin
       </button>
+      </div>
+  {result && (
+        <div>  <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">Result</h2>
+
+        <div className="mt-1 space-y-2 text-gray-700">
+          <p className="text-lg">
+            <span className="font-semibold">Winning Number:</span>{result.winningNumber}
+          </p>
+          <p className="text-lg">
+            <span className="font-semibold">Total Payout:</span> ${result.totalPayout}
+          </p>
+          <p className="text-lg">
+            <span className="font-semibold">Remaining Balance:</span> ${result.balance}
+          </p>
+        </div></div>
+  )}
+      </div>
+
 
       <div>{error && <div className="text-red-600 mb-4">{error}</div>}</div>
 
       {result && (
   <div className="mt-6 p-4 border rounded-lg shadow-md">
-    <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">Result</h2>
-
-    <div className="mt-4 space-y-2 text-gray-700">
-      <p className="text-lg">
-        <span className="font-semibold">Winning Number:</span> {result.winningNumber}
-      </p>
-      <p className="text-lg">
-        <span className="font-semibold">Total Payout:</span> ${result.totalPayout}
-      </p>
-      <p className="text-lg">
-        <span className="font-semibold">Remaining Balance:</span> ${result.balance}
-      </p>
-    </div>
+  
 
     <h3 className="text-xl font-semibold text-gray-800 mt-6 border-b pb-2 animate-pulse">
      Last Bet Details
