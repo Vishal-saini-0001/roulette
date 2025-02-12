@@ -192,7 +192,7 @@ const RouletteBoard = () => {
               key={num}
               onClick={() => handleNumberClick(num)}
               className={`p-2 border rounded ${
-                selectedNumbers.includes(num) ? "ring-2 ring-blue-400" : ""
+                selectedNumbers.includes(num) ? "ring-4 ring-yellow-400" : ""
               } ${
                 redButton.includes(num)
                   ? "bg-red-400   text-white"
